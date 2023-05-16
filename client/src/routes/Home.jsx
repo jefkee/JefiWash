@@ -7,7 +7,7 @@ import NavBar from '../components/NavBar'
 
 const Home = () => {
   return (
-    <div>
+    <div className='home p-0 m-0'>
         {/* <img src={home_bg} className="img-responsive overflow-hidden"/> */}
         <button className="startOrder">Start Order</button>
 

@@ -6,6 +6,8 @@ import './App.css'
 import { OrdersContextProvider } from './context/OrdersContext'
 import EditOrderPage from './routes/EditOrderPage'
 
+import * as bootstrap from 'bootstrap'
+
 //components
 import NavBar from './components/NavBar'
 import Dashboard from './components/Dashboard'
@@ -46,11 +48,13 @@ function App() {
   return (
     <OrdersContextProvider>
     <Fragment>
+      <div className="navbar w-100">
       <NavBar />
+      </div>
       <Router>
-          <div className="container">
+          <div className="router vw-100 vh-100 p-0">
           <Routes>
-            <Route exact path="/" element={isAuthenticated ? <Home setAuth={setAuth}/> : <Navigate to="/login"/>} />
+            <Route exact path="/" element={<Home/>} />
             <Route exact path="/orders/:id" element={<OrderInfoPage />} />
             <Route exact path="/orders/:id/edit" element={<EditOrderPage/>} />
             <Route exact path="/dashboard" element= {isAuthenticated ? <Dashboard setAuth={setAuth} /> : <Navigate to="/login"/>} />
