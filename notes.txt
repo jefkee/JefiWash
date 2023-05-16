@@ -1,0 +1,7 @@
+CREATE DATABASE name;                 - create db
+\l                                    - \l list db    
+\c name connect to db                 - connect to db  
+sudo -u postgres psql                 - login as postgres user
+sudo /etc/init.d/postgresql start     - start psql server
+lsof -i:8080                          - check if smth is running on port
+kill 1212                             - kill process by id
