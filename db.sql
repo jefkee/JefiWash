@@ -8,6 +8,11 @@ CREATE DATABASE jwt_auth;
 --download uuid extension
 CREATE EXTENSION "uuid-ossp";
 
+--create table with prisma
+npx prisma generate 
+npx prisma migrate dev
+
+--create table with query
 CREATE TABLE users (
     user_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_name VARCHAR(255) NOT NULL,

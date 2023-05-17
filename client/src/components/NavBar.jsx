@@ -27,6 +27,7 @@
 // export default NavBar
 
 import * as React from "react";
+import { useState, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -37,16 +38,34 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
+import { useNavigate } from "react-router-dom";
 
 import setAuth from "../App.jsx";
+import { toast } from "react-toastify";
+
+import UserInfo from "../apis/UserInfo";
 
 const pages = ["Packages", "About"];
 const settings = ["Profile", "Orders", "Dashboard", "Logout"];
 
-function ResponsiveAppBar() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
 
+
+
+function ResponsiveAppBar({ setAuth, isAuthenticated }) {
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
+  const [userName, setUserName] = useState("")
+  
+  const logOut = (e) => {
+    e.preventDefault();
+    localStorage.removeItem("token");
+    // setAuth(false);
+    toast.success("Logged out successfully!");
+    // const navigate = useNavigate()
+    // navigate("/")
+    window.location.href = "/";
+  };
+  
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -60,6 +79,15 @@ function ResponsiveAppBar() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  useEffect(() => {
+      getUserName();
+    }, [isAuthenticated])
+
+  const getUserName = async () => {
+    const userName = await UserInfo.getUserName();
+    setUserName(userName);
   };
 
   return (
@@ -78,6 +106,7 @@ function ResponsiveAppBar() {
             letterSpacing: ".3rem",
             color: "inherit",
             textDecoration: "none",
+            paddingLeft: "20px",
           }}
         >
           Jefi Wash
@@ -156,7 +185,7 @@ function ResponsiveAppBar() {
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
               <div className="navUser">
-                User
+                {isAuthenticated ? <span> {userName} </span> : <span> Login </span>}
               </div>
             </IconButton>
           </Tooltip>
@@ -177,9 +206,15 @@ function ResponsiveAppBar() {
             onClose={handleCloseUserMenu}
           >
             {settings.map((setting) => (
-              <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                <Typography textAlign="center">{setting}</Typography>
-              </MenuItem>
+              setting = "Logout" ? (
+                <MenuItem key={setting} onClick={logOut}>
+                  <Typography textAlign="center">{setting}</Typography>
+                </MenuItem>
+              ) : (
+                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">{setting}</Typography>
+                </MenuItem>
+              )
             ))}
           </Menu>
         </Box>

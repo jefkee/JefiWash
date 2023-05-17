@@ -24,9 +24,9 @@ const Login = ({setAuth}) => {
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(body)
             });
-
+            
             const parseRes = await response.json();
-
+            
             if(parseRes.token){
                 localStorage.setItem("token", parseRes.token)
                 setAuth(true)
@@ -35,12 +35,13 @@ const Login = ({setAuth}) => {
                 setAuth(false)
                 toast.error(parseRes)
             }
-
+            
         } catch (err) {
             console.error(err.message)
         }
+        window.location.reload(true);
     }
-
+    
     return (
         <Fragment>
         <h1 className="text-center my-5">Login</h1>

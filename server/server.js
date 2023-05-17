@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken")
 require("dotenv").config();
 const express = require("express")
 const morgan = require("morgan")
@@ -7,6 +8,7 @@ const db = require("./db")
 const app = express()
 
 //middleware
+
 
 app.use(cors())
 app.use(express.json()) //to retrieve information from the body of the POST request
@@ -37,28 +39,54 @@ app.get("/api/v1/orders", async (req, res) => {
 })
 
 //get something by id
-app.get("/api/v1/orders/:order_id", async (req, res) => {
-    console.log(req.params.order_id)
+// app.get("/api/v1/orders/:order_id", async (req, res) => {
+//     console.log(req.params.order_id)
     
-    try{
-        const results = await db.users.findUnique({
-            where: {
-                id: parseInt(req.params.order_id)
-            }
-        });
+//     try{
+//         const results = await db.users.findUnique({
+//             where: {
+//                 id: parseInt(req.params.order_id)
+//             }
+//         });
 
-        res.status(200).json({
-            status: "success",
-            data: {
-                orders: results
-            }
-        })
+//         res.status(200).json({
+//             status: "success",
+//             data: {
+//                 orders: results
+//             }
+//         })
+
+//     } catch (err) {
+//          console.log(err)
+//     }
+
+
+// })
+
+app.get("/username", async (req, res) => {
+
+    try{
+        // console.log(req)
+        const tokenData = req.header("token")
+        console.log(tokenData)
+        const decodedToken = jwt.decode(tokenData)
+        // console.log(decodedToken)
+        const user_id = decodedToken.user
+        const user = await db.users.findUnique({
+            where: {
+                user_id: user_id,
+            },
+        }
+        )
+        console.log(user)
+        res.status(200).json(user?.user_name)
+        // const results = await findByID(tokenData)
+        // console.log(results)
+        // res.status(200).json(results?.user_name)
 
     } catch (err) {
-         console.log(err)
+        console.log(err)
     }
-
-
 })
 
 //create something
@@ -144,7 +172,7 @@ app.delete("/api/v1/orders/:order_id", async (req, res) => {
 
 
 
-const PORT = process.env.PORT || 1000
+const PORT = process.env.PORT || 8080
 app.listen(PORT, () => {
     console.log(`Server is up listening on port ${PORT}`)
 })
