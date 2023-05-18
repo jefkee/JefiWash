@@ -1,8 +1,9 @@
 import React, { Fragment, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import UserLookUp from "../apis/UserLookUp";
 
-const Login = ({setAuth}) => {
+const Login = ({setAuth, onLoginSuccess}) => {
 
     const [inputs, setInputs] = useState({
         email: "",
@@ -19,27 +20,22 @@ const Login = ({setAuth}) => {
         e.preventDefault();
         try {
             const body = {email, password};
-            const response = await fetch("http://localhost:8080/auth/login", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(body)
-            });
+
+            const response = await UserLookUp.post('/auth/login', body);
             
-            const parseRes = await response.json();
-            
-            if(parseRes.token){
-                localStorage.setItem("token", parseRes.token)
+            if(response.data.token){
+                localStorage.setItem("token", response.data.token)
                 setAuth(true)
                 toast.success("Logged in successfully")
+                window.location.reload(true)
             } else {
                 setAuth(false)
-                toast.error(parseRes)
+                toast.error(response)
             }
             
         } catch (err) {
             console.error(err.message)
         }
-        window.location.reload(true);
     }
     
     return (

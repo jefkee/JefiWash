@@ -68,7 +68,7 @@ app.get("/username", async (req, res) => {
     try{
         // console.log(req)
         const tokenData = req.header("token")
-        console.log(tokenData)
+        // console.log(tokenData)
         const decodedToken = jwt.decode(tokenData)
         // console.log(decodedToken)
         const user_id = decodedToken.user
@@ -78,7 +78,7 @@ app.get("/username", async (req, res) => {
             },
         }
         )
-        console.log(user)
+        // console.log(user)
         res.status(200).json(user?.user_name)
         // const results = await findByID(tokenData)
         // console.log(results)

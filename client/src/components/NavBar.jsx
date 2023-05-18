@@ -1,31 +1,3 @@
-// import React from "react";
-
-// const NavBar = () => {
-//     return (
-//         <nav className="navbar navbar-expand-lg navbar-dark bg-transparent fs-3">
-//             <div className="navbarEl container-fluid">
-//                 <a className="navbar-brand fs-1" href="#">Jefi Wash</a>
-//                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-//                     <span className="navbar-toggler-icon"></span>
-//                 </button>
-//                 <div className="collapse navbar-collapse" id="navbarNav">
-//                 <ul className="navbar-nav">
-//                     <li className="nav-item">
-//                         <a className="nav-link" href="/packages">Packages</a>
-//                     </li>
-//                     <li className="nav-item">
-//                         <a className="nav-link" href="/about">About</a>
-//                     </li>
-//                 </ul>
-//                 </div>
-//                 <button className="login">Login</button>
-//             </div>
-//         </nav>
-//         )
-//     };
-
-// export default NavBar
-
 import * as React from "react";
 import { useState, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
@@ -48,15 +20,14 @@ import UserInfo from "../apis/UserInfo";
 const pages = ["Packages", "About"];
 const settings = ["Profile", "Orders", "Dashboard", "Logout"];
 
-
-
-
-function ResponsiveAppBar({ setAuth, isAuthenticated }) {
+function ResponsiveAppBar({ isAuthenticated }) {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [userName, setUserName] = useState("")
+
+  const navigate = useNavigate();
   
-  const logOut = (e) => {
+  const handleLogOut = (e) => {
     e.preventDefault();
     localStorage.removeItem("token");
     // setAuth(false);
@@ -86,8 +57,10 @@ function ResponsiveAppBar({ setAuth, isAuthenticated }) {
     }, [isAuthenticated])
 
   const getUserName = async () => {
-    const userName = await UserInfo.getUserName();
-    setUserName(userName);
+    if (isAuthenticated) {
+      const userName = await UserInfo.getUserName();
+      setUserName(userName);
+    }
   };
 
   return (
@@ -97,13 +70,13 @@ function ResponsiveAppBar({ setAuth, isAuthenticated }) {
           variant="h6"
           noWrap
           component="a"
-          href="/"
+          onClick={() => navigate("/")}
           sx={{
             mr: 2,
             display: { xs: "none", md: "flex" },
             fontFamily: "monospace",
             fontWeight: 700,
-            letterSpacing: ".3rem",
+            letterSpacing: ".15rem",
             color: "inherit",
             textDecoration: "none",
             paddingLeft: "20px",
@@ -120,6 +93,7 @@ function ResponsiveAppBar({ setAuth, isAuthenticated }) {
             aria-haspopup="true"
             onClick={handleOpenNavMenu}
             color="inherit"
+
           >
             <MenuIcon />
           </IconButton>
@@ -142,7 +116,7 @@ function ResponsiveAppBar({ setAuth, isAuthenticated }) {
             }}
           >
             {pages.map((page) => (
-              <MenuItem key={page} onClick={handleCloseNavMenu}>
+              <MenuItem key={page} onClick ={() => navigate(`/${page.toLowerCase()}`)}>
                 <Typography textAlign="center">{page}</Typography>
               </MenuItem>
             ))}
@@ -153,7 +127,7 @@ function ResponsiveAppBar({ setAuth, isAuthenticated }) {
           variant="h5"
           noWrap
           component="a"
-          href=""
+          onClick={() => navigate("/")}
           sx={{
             mr: 2,
             display: { xs: "flex", md: "none" },
@@ -171,23 +145,28 @@ function ResponsiveAppBar({ setAuth, isAuthenticated }) {
           {pages.map((page) => (
             <Button
               key={page}
-              onClick={handleCloseNavMenu}
-              sx={{ my: 2, color: "white", display: "block", }}
-            >
+              onClick ={() => navigate(`/${page.toLowerCase()}`)}
+              sx={{ my: 2, color: "white", display: "block" }}            >
               {page}
             </Button>
           ))}
         </Box>
-
-        
         
         <Box sx={{ flexGrow: 0 }}>
-          <Tooltip title="Open settings">
+          <Tooltip>
+          {isAuthenticated ? (
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
               <div className="navUser">
-                {isAuthenticated ? <span> {userName} </span> : <span> Login </span>}
+                <span> {userName} </span>
               </div>
             </IconButton>
+          ) : (
+            <IconButton component="a" href="/login" sx={{ p: 0 }}>
+              <div className="navUser"> 
+              <span>Login</span> 
+              </div>
+            </IconButton>
+            )}
           </Tooltip>
           <Menu
             sx={{ mt: "45px" }}
@@ -206,12 +185,12 @@ function ResponsiveAppBar({ setAuth, isAuthenticated }) {
             onClose={handleCloseUserMenu}
           >
             {settings.map((setting) => (
-              setting = "Logout" ? (
-                <MenuItem key={setting} onClick={logOut}>
+              setting === "Logout" ? (
+                <MenuItem key={setting} onClick={handleLogOut}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ) : (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick ={() => navigate(`/${setting.toLowerCase()}`)}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               )

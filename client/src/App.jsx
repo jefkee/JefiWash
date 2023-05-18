@@ -18,6 +18,7 @@ import Register from './components/Register'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
+
 function App() {
 
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -37,7 +38,6 @@ function App() {
       const parseRes = await response.json()
       
       parseRes === true ? setIsAuthenticated(true) : setIsAuthenticated(false)
-      console.log("parseres: " + parseRes)
       
     } catch (err) {
       console.error(err.message)
@@ -59,10 +59,10 @@ function App() {
   return (
     <UsersContextProvider>
     <Fragment>
+      <Router>
       <div className="navbar w-100">
       <ResponsiveAppBar setAuth={setAuth} isAuthenticated={isAuthenticated}/>
       </div>
-      <Router>
           <div className="router vw-100 vh-100 p-0">
           <Routes>
             <Route exact path="/orders/:id/edit" element={<EditOrderPage/>} />
