@@ -1,21 +1,14 @@
 import React from 'react'
 import '../styles/home.css'
-import home_bg from '../assets/home_lambo.jpg'
-import OrdersList from '../components/OrdersList'
-import AddOrder from '../components/AddOrder'
-import NavBar from '../components/NavBar'
+import { useNavigate } from 'react-router-dom'
 
 const Home = () => {
+
+  const navigate = useNavigate()
+
   return (
     <div className='home p-0 m-0'>
-        {/* <img src={home_bg} className="img-responsive overflow-hidden"/> */}
-        <button className="startOrder">Start Order</button>
-
-        {/* <NavBar /> */}
-
-
-        {/* <AddOrder />
-        <OrdersList /> */}
+        <button className="startOrder" onClick={() => navigate("/order")}>Start Order</button>
     </div>
   )
 }

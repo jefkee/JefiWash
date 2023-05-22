@@ -13,6 +13,7 @@ import ResponsiveAppBar from './components/NavBar'
 import Dashboard from './components/Dashboard'
 import Login from './components/Login'
 import Register from './components/Register'
+import Order from './components/Order'
 
 //toastify
 import { ToastContainer, toast } from 'react-toastify'
@@ -48,8 +49,6 @@ function App() {
   
   useEffect(() => {
     isAuth()
-    // console.log("useEffect: " + isAuthenticated)
-    // console.log("useEffect: " + localStorage.token)
     }, [])
   
   if (loading) {
@@ -67,9 +66,10 @@ function App() {
           <Routes>
             <Route exact path="/orders/:id/edit" element={<EditOrderPage/>} />
             <Route exact path="/orders/:id" element={<OrderInfoPage />} />
-            <Route exact path="/dashboard" element= {isAuthenticated ? <Dashboard setAuth={setAuth}/> : <Navigate to="/register"/>}/>
+            <Route exact path="/dashboard" element= {isAuthenticated ? <Dashboard setAuth={setAuth}/> : <Navigate to="/login"/>}/>
             <Route exact path="/register" element={!isAuthenticated ? <Register setAuth={setAuth} /> : <Navigate to="/login"/>} />
             <Route exact path="/login" element={!isAuthenticated ? <Login setAuth={setAuth} /> : <Navigate to="/"/>} />
+            <Route exact path="/order" element={isAuthenticated ? <Order /> : <Navigate to="/login"/>} />
             <Route exact path="/" element={<Home setAuth={setAuth}/>} />
           </Routes>
           </div>
