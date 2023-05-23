@@ -72,6 +72,7 @@ app.get("/username", async (req, res) => {
         const decodedToken = jwt.decode(tokenData)
         // console.log(decodedToken)
         const user_id = decodedToken.user
+        // console.log(user_id)
         const user = await db.users.findUnique({
             where: {
                 user_id: user_id,

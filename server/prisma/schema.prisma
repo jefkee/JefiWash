@@ -8,9 +8,57 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model users {
-  user_id       String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  user_name     String @db.VarChar(255)
-  user_email    String @db.VarChar(255)
-  user_password String @db.VarChar(255)
+enum UserType {
+  ADMIN
+  USER
+}
+
+model Users {
+  user_id             String    @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_name           String    @db.VarChar(255)
+  user_email          String    @unique @db.VarChar(255)
+  user_password       String    @db.VarChar(255)
+  user_type           UserType[]  @default([USER])  
+  customers           Customers[]
+  @@map("users")
+}
+
+model Customers {
+  customer_id         String   @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  customer_first_name String
+  customer_last_name  String
+  customer_address    String
+  customer_phone_number String
+  customer_user       Users    @relation(fields: [customer_userId], references: [user_id])
+  customer_userId     String  @db.Uuid
+  customer_orders     Orders[]
+  customer_vehicles   Vehicles[]
+  customer_files      Files[]
+}
+
+model Orders {
+  order_id            String   @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  order_date    DateTime
+  total_amount  Float
+  payment_status String
+  customer      Customers @relation(fields: [customerId], references: [customer_id])
+  customerId    String   @db.Uuid
+}
+
+model Vehicles {
+  vehicle_id         String   @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  make       String
+  model      String
+  year       Int
+  customer   Customers @relation(fields: [customerId], references: [customer_id])
+  customerId String   @db.Uuid
+}
+
+model Files {
+  file_id         String   @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  file_name  String
+  file_path  String
+  file_size  Int
+  customer   Customers @relation(fields: [customerId], references: [customer_id])
+  customerId String   @db.Uuid
 }
