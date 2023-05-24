@@ -18,11 +18,11 @@ import Order from './components/Order'
 //toastify
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-
+import Profile from './components/Profile'
 
 function App() {
-
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
   const [loading, setLoading] = useState(true)
   
   const setAuth = boolean => {
@@ -60,12 +60,13 @@ function App() {
     <Fragment>
       <Router>
       <div className="navbar w-100">
-      <ResponsiveAppBar setAuth={setAuth} isAuthenticated={isAuthenticated}/>
+      <ResponsiveAppBar setAuth={setAuth} isAuthenticated={isAuthenticated} isAdmin={isAdmin}/>
       </div>
           <div className="router vw-100 vh-100 p-0">
           <Routes>
             <Route exact path="/orders/:id/edit" element={<EditOrderPage/>} />
             <Route exact path="/orders/:id" element={<OrderInfoPage />} />
+            <Route exact path="/profile" element={isAuthenticated ? <Profile/> : <Navigate to="/login"/>}/>
             <Route exact path="/dashboard" element= {isAuthenticated ? <Dashboard setAuth={setAuth}/> : <Navigate to="/login"/>}/>
             <Route exact path="/register" element={!isAuthenticated ? <Register setAuth={setAuth} /> : <Navigate to="/login"/>} />
             <Route exact path="/login" element={!isAuthenticated ? <Login setAuth={setAuth} /> : <Navigate to="/"/>} />

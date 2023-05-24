@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import UserLookUp from "../apis/UserLookUp";
 
-const Login = ({setAuth, onLoginSuccess}) => {
+const Login = ({ setAuth }) => {
 
     const [inputs, setInputs] = useState({
         email: "",
@@ -40,7 +40,7 @@ const Login = ({setAuth, onLoginSuccess}) => {
     
     return (
         <Fragment>
-        <h1 className="text-center my-5">Login</h1>
+        <h1 className="text-center my-5 text-white">Login</h1>
         <form onSubmit={onSubmitForm}>
             <input type="email" name="email" placeholder="email" value={email} onChange={e => onChange(e)} className="form-control my-3"/>
             <input type="password" name="password" placeholder="password" value={password} onChange={e => onChange(e)} className="form-control my-3"/>

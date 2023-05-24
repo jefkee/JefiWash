@@ -1,15 +1,14 @@
 const jwt = require("jsonwebtoken")
 require("dotenv").config();
 const express = require("express")
-const morgan = require("morgan")
+// const morgan = require("morgan")
 const cors = require("cors")
 const db = require("./db")
+const validInfo = require("./middleware/validInfo.js")
 
 const app = express()
 
 //middleware
-
-
 app.use(cors())
 app.use(express.json()) //to retrieve information from the body of the POST request
 
@@ -35,7 +34,6 @@ app.get("/api/v1/orders", async (req, res) => {
     }   catch (err) {
         console.log(err)
     }
-
 })
 
 //get something by id
@@ -62,6 +60,88 @@ app.get("/api/v1/orders", async (req, res) => {
 
 
 // })
+
+app.put("/updateUser", validInfo, async (req, res) => {
+    console.log(req.body)
+    try{
+        // console.log(req.body)
+        const tokenData = req.header("token")
+        // console.log(tokenData)
+        const decodedToken = jwt.decode(tokenData)
+        // console.log(decodedToken)
+        const user_id = decodedToken.user
+        // console.log(user_id)
+        const user = await db.users.findUnique({
+            where: {
+                user_id: user_id,
+            },
+        }
+        )
+        // console.log(user)
+        const updatedUser = await db.users.update({
+            where: {
+                user_id: user_id,
+            },
+            data: {
+                user_name: req.body.user_name,
+                user_email: req.body.user_email,
+                user_phone_number: req.body.user_phone_number,
+            },
+        })
+        // console.log(updatedUser)
+        res.status(200).json(updatedUser)
+
+    } catch (err) {
+        console.log(err)
+    }
+})
+
+app.get("/getUser", async (req, res) => {
+
+    try{
+        // console.log(req)
+        const tokenData = req.header("token")
+        // console.log(tokenData)
+        const decodedToken = jwt.decode(tokenData)
+        // console.log(decodedToken)
+        const user_id = decodedToken.user
+        // console.log(user_id)
+        const user = await db.users.findUnique({
+            where: {
+                user_id: user_id,
+            },
+        }
+        )
+        // console.log(user)
+        res.status(200).json(user)
+
+    } catch (err) {
+        console.log(err)
+    }
+})
+
+app.get("/role", async (req, res) => {
+
+    try{
+        // console.log(req)
+        const tokenData = req.header("token")
+        // console.log(tokenData)
+        const decodedToken = jwt.decode(tokenData)
+        // console.log(decodedToken)
+        const user_id = decodedToken.user
+        // console.log(user_id)
+        const user = await db.users.findUnique({
+            where: {
+                user_id: user_id,
+            },
+        }
+        )
+        res.status(200).json(user?.user_type)
+
+    } catch (err) {
+        console.log(err)
+    }
+})
 
 app.get("/username", async (req, res) => {
 

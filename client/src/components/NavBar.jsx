@@ -12,15 +12,19 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { useNavigate } from "react-router-dom";
 
-import setAuth from "../App.jsx";
 import { toast } from "react-toastify";
 
 import UserInfo from "../apis/UserInfo";
 
-const pages = ["Packages", "About"];
-const settings = ["Profile", "Orders", "Dashboard", "Logout"];
+const isAdmin = await UserInfo.isAdmin();
 
-function ResponsiveAppBar({ isAuthenticated }) {
+function ResponsiveAppBar({ isAuthenticated,  }) {
+  console.log(isAdmin);
+  const pages = ["Packages", "About"];
+  const settings = ["Profile", "Orders", "Logout"];
+
+  const adminSettings = ["Profile", "Orders", "Dashboard", "Logout"];
+
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [userName, setUserName] = useState("")
@@ -30,10 +34,7 @@ function ResponsiveAppBar({ isAuthenticated }) {
   const handleLogOut = (e) => {
     e.preventDefault();
     localStorage.removeItem("token");
-    // setAuth(false);
     toast.success("Logged out successfully!");
-    // const navigate = useNavigate()
-    // navigate("/")
     window.location.href = "/";
   };
   
@@ -122,7 +123,6 @@ function ResponsiveAppBar({ isAuthenticated }) {
             ))}
           </Menu>
         </Box>
-        {/* <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} /> */}
         <Typography
           variant="h5"
           noWrap
@@ -184,7 +184,21 @@ function ResponsiveAppBar({ isAuthenticated }) {
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
           >
-            {settings.map((setting) => (
+            {isAdmin ? (
+              adminSettings.map((setting) => (
+                setting === "Logout" ? (
+                  <MenuItem key={setting} onClick={handleLogOut}>
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                ) : (
+                  <MenuItem key={setting} onClick ={() => navigate(`/${setting.toLowerCase()}`)}>
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                )
+              ))
+             ) : (
+            
+            settings.map((setting) => (
               setting === "Logout" ? (
                 <MenuItem key={setting} onClick={handleLogOut}>
                   <Typography textAlign="center">{setting}</Typography>
@@ -194,7 +208,8 @@ function ResponsiveAppBar({ isAuthenticated }) {
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               )
-            ))}
+            )))
+              }
           </Menu>
         </Box>
       </Toolbar>

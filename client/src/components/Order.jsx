@@ -9,21 +9,21 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-
-const API_KEY = "";
+import OrderLookUp from "../apis/OrderLookUp";
+import { toast } from "react-toastify";
 
 function Order() {
+
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
-    phone: "",
     carMake: "",
     carModel: "",
     carYear: "",
     dateTime: new Date(),
-    address: "",
     lat: null,
     lng: null,
+    jwt: localStorage.getItem("token"),
   });
 
   const handleChange = (e) => {
@@ -34,8 +34,23 @@ function Order() {
     setFormData({ ...formData, dateTime: date });
   };
 
-  const handleSubmit = () => {
-    // Save the order to the database
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      const body = { ...formData };
+      const response = await OrderLookUp.post("/auth/order", body, {
+        headers: { token: localStorage.token }
+      });
+
+      if(response.data){
+        toast.success("Order placed successfully")
+        window.location.href = "/"
+      } else {
+        toast.error(response)
+      }
+    } catch (err) {
+      console.error(err.message);
+    }
     console.log("Form Data:", formData);
   };
 
@@ -96,20 +111,6 @@ function Order() {
               label="Surname"
               name="surname"
               value={formData.surname}
-              onChange={handleChange}
-              InputProps={{
-                style: {
-                  color: "white",
-                },
-              }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Phone Number"
-              name="phone"
-              value={formData.phone}
               onChange={handleChange}
               InputProps={{
                 style: {
