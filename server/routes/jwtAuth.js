@@ -87,26 +87,28 @@ router.get("/is-verify", authorization, async (req, res) => {
 //register
 router.post("/register", validInfo, async (req, res) => {
     try {
-        const {name, email, password, telNumber} = req.body;
+        const {user_name, user_email, user_password, user_phone_number} = req.body;
         const user = await db.users.findMany({
             where: {
-                user_email: email
+                user_email: user_email
             }
         })
+        // console.log(user)
         if (user.length !== 0) {
-            return res.status(401).json("User already exists")
+            // console.log("User already exists")
+            return res.status(401).json({ error: "User already exists" })
         }
 
         const saltRounds = 10
         const salt = await bcrypt.genSalt(saltRounds)
-        const bcryptPassword = await bcrypt.hash(password, salt)
+        const bcryptPassword = await bcrypt.hash(user_password, salt)
 
         const newUser = await db.users.create({
             data: {
-                user_name: name,
-                user_email: email,
+                user_name: user_name,
+                user_email: user_email,
                 user_password: bcryptPassword,
-                user_phone_number: telNumber
+                user_phone_number: user_phone_number
             }
         })
 
@@ -115,7 +117,7 @@ router.post("/register", validInfo, async (req, res) => {
 
     } catch (err) {
         console.error(err.message)
-        res.status(500).send("Server error")
+        res.status(500).json({ error: "Server error" })
     }
 })
 
@@ -123,17 +125,17 @@ router.post("/register", validInfo, async (req, res) => {
 //login
 router.post("/login", validInfo, async (req, res) => {
     try {
-        const {email, password} = req.body;
+        const {user_email, user_password} = req.body;
         const user = await db.users.findMany({
             where: {
-                user_email: email
+                user_email: user_email
             }
         })
         if (user.length === 0) {
             return res.status(401).json("Invalid Credential")
         }
 
-        const validPassword = await bcrypt.compare(password, user[0].user_password)
+        const validPassword = await bcrypt.compare(user_password, user[0].user_password)
         if (!validPassword) {
             return res.status(401).json("Invalid Credential")
         }

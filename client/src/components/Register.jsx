@@ -15,39 +15,44 @@ const Register = ({ setAuth }) => {
     const {user_name, user_email, user_password, user_phone_number} = inputs
 
     const onChange = e => {
-        setInputs({...inputs, [e.target.user_name] : e.target.value})
+        setInputs({...inputs, [e.target.name] : e.target.value})
     }
 
     const onSubmitForm = async e => {
         e.preventDefault()
         try {
             const body = {user_email, user_password, user_name, user_phone_number}
-            console.log(body)
+            // console.log(body)
             const response = await UserLookUp.post("/auth/register", body)
-
-            if(response.data.token){
+            console.log(response)
+            
+            if (response.status === 401) {
+                toast.error(response.data)
+                }
+            else if(response.data.token){
                 localStorage.setItem("token", response.data.token)
                 setAuth(true)
                 toast.success("Registered successfully")
                 window.location.reload(true)
             } else {
                 setAuth(false)
-                toast.error(response)
+                toast.error("Failed to register")
             }
 
         } catch (err) {
             console.error(err.message)
+            toast.error("Server error")
         }
     }
 
     return (
         <Fragment>
-        <h1 className="text-center my-5">Register</h1>
+        <h1 className="text-center my-5 text-white">Register</h1>
         <form onSubmit={onSubmitForm}>
-            <input type="text" name="name" placeholder="name" className="form-control my-3" value={name} onChange={e => onChange(e)}/>
-            <input type="email" name="email" placeholder="email" className="form-control my-3" value={email} onChange={e => onChange(e)}/>
-            <input type="password" name="password" placeholder="password" className="form-control my-3" value={password} onChange={e => onChange(e)}/>
-            <input type="telNumber" name="telNumber" placeholder="phone number" className="form-control my-3" value={telNumber} onChange={e => onChange(e)}/>
+            <input type="name" name="user_name" placeholder="name" className="form-control my-3" value={user_name} onChange={e => onChange(e)}/>
+            <input type="email" name="user_email" placeholder="email" className="form-control my-3" value={user_email} onChange={e => onChange(e)}/>
+            <input type="password" name="user_password" placeholder="password" className="form-control my-3" value={user_password} onChange={e => onChange(e)}/>
+            <input type="number" name="user_phone_number" placeholder="phone number" className="form-control my-3" value={user_phone_number} onChange={e => onChange(e)}/>
             <button className="btn btn-success btn-block">Submit</button>
         </form>
         <Link to="/login">Login</Link>

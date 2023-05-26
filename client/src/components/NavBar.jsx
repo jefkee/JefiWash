@@ -19,7 +19,7 @@ import UserInfo from "../apis/UserInfo";
 const isAdmin = await UserInfo.isAdmin();
 
 function ResponsiveAppBar({ isAuthenticated,  }) {
-  console.log(isAdmin);
+  // console.log(isAdmin);
   const pages = ["Packages", "About"];
   const settings = ["Profile", "Orders", "Logout"];
 

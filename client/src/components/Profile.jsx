@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import UserInfo from '../apis/UserInfo';
+import { toast } from 'react-toastify';
+// import OrdersList from './OrdersList';
 
 const Profile = () => {
     const [user, setUser] = useState({
         user_name: '',
         user_email: '',
         user_phone_number: '',
+        user_type: '',
     });
     
     // Get user's data from the database
@@ -16,6 +19,7 @@ const Profile = () => {
                 const response = await UserInfo.getUserInfo();
                 // console.log(response);
                 setUser({
+                    user_type: response.user_type,
                     user_name: response.user_name,
                     user_email: response.user_email,
                     user_phone_number: response.user_phone_number,
@@ -41,20 +45,24 @@ const Profile = () => {
         try {
             // Replace with your API endpoint to update the user's data
             const response = await UserInfo.updateUserInfo(user);
-            console.log(response);
+            // console.log(response);
             // Update frontend state with the backend response's data
             setUser({
                 user_name: response.user_name,
                 user_email: response.user_email,
                 user_phone_number: response.user_phone_number,
             });
+            toast.success("Profile updated successfully")
             window.location.reload();
     } catch (error) {
+        toast.error("Error updating profile")
         console.error(error);
     }
     };
 
     const { user_name, user_email, user_phone_number } = user;
+
+    // console.log("useris",user)
 
   return (
     <div className="container text-white">
@@ -103,6 +111,8 @@ const Profile = () => {
       <button className="btn btn-primary" onClick={handleSaveChanges}>
         Save Changes
       </button>
+      {/* <OrdersList user={{ user_type: user.user_type[0], user_id: user.user_id }} /> */}
+      
     </div>
   );
 };
