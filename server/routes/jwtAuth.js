@@ -9,9 +9,7 @@ const jwt = require("jsonwebtoken");
 
 router.post('/order', authorization, async (req, res) => {
     const tokenData = req.header("token")
-    // console.log(tokenData)
     const decodedToken = jwt.decode(tokenData)
-    // console.log(decodedToken)
     const user_id = decodedToken.user
 
     try {
@@ -93,10 +91,8 @@ router.post("/register", validInfo, async (req, res) => {
                 user_email: user_email
             }
         })
-        // console.log(user)
         if (user.length !== 0) {
-            // console.log("User already exists")
-            return res.status(401).json({ error: "User already exists" })
+            return res.status(401).json("User already exists")
         }
 
         const saltRounds = 10
@@ -145,7 +141,7 @@ router.post("/login", validInfo, async (req, res) => {
 
     } catch (err) {
         console.error(err.message)
-        res.status(500).send("Server error")
+        res.status(500).json("Server error")
     }
 })
 

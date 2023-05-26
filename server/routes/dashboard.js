@@ -6,7 +6,7 @@ router.get("/", authorization, async (req, res) => {
     try {
         const user = await db.users.findFirstOrThrow({
             where: {
-                user_id: req.user //req.user is coming from the authorization middleware
+                user_id: req.user
             },
             select: {
                 user_name: true

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import UserInfo from '../apis/UserInfo';
 import { toast } from 'react-toastify';
-// import OrdersList from './OrdersList';
 
 const Profile = () => {
     const [user, setUser] = useState({
@@ -11,21 +10,19 @@ const Profile = () => {
         user_type: '',
     });
     
-    // Get user's data from the database
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Replace with your API endpoint to get the user's data
                 const response = await UserInfo.getUserInfo();
-                // console.log(response);
+
                 setUser({
                     user_type: response.user_type,
                     user_name: response.user_name,
                     user_email: response.user_email,
                     user_phone_number: response.user_phone_number,
                 });
-                // console.log(user);
             } catch (error) {
+                toast.error(error.response.data)
                 console.error(error);
             }
         };
@@ -43,10 +40,8 @@ const Profile = () => {
     
     const handleSaveChanges = async () => {
         try {
-            // Replace with your API endpoint to update the user's data
             const response = await UserInfo.updateUserInfo(user);
-            // console.log(response);
-            // Update frontend state with the backend response's data
+
             setUser({
                 user_name: response.user_name,
                 user_email: response.user_email,
@@ -55,14 +50,12 @@ const Profile = () => {
             toast.success("Profile updated successfully")
             window.location.reload();
     } catch (error) {
-        toast.error("Error updating profile")
+        toast.error(error.response.data)
         console.error(error);
     }
     };
 
     const { user_name, user_email, user_phone_number } = user;
-
-    // console.log("useris",user)
 
   return (
     <div className="container text-white">
@@ -110,9 +103,7 @@ const Profile = () => {
       </form>
       <button className="btn btn-primary" onClick={handleSaveChanges}>
         Save Changes
-      </button>
-      {/* <OrdersList user={{ user_type: user.user_type[0], user_id: user.user_id }} /> */}
-      
+      </button>      
     </div>
   );
 };

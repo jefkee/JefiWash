@@ -26,10 +26,7 @@ const Register = ({ setAuth }) => {
             const response = await UserLookUp.post("/auth/register", body)
             console.log(response)
             
-            if (response.status === 401) {
-                toast.error(response.data)
-                }
-            else if(response.data.token){
+            if(response.data.token){
                 localStorage.setItem("token", response.data.token)
                 setAuth(true)
                 toast.success("Registered successfully")
@@ -41,7 +38,7 @@ const Register = ({ setAuth }) => {
 
         } catch (err) {
             console.error(err.message)
-            toast.error("Server error")
+            toast.error(err.response.data)
         }
     }
 

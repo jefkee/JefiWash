@@ -46,12 +46,13 @@ function Order() {
         toast.success("Order placed successfully")
         window.location.href = "/"
       } else {
-        toast.error(response)
+        toast.error(response.data)
       }
     } catch (err) {
+      toast.error(err.response.data);
       console.error(err.message);
     }
-    console.log("Form Data:", formData);
+    // console.log("Form Data:", formData);
   };
 
   function LocationMarker() {

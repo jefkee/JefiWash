@@ -30,11 +30,12 @@ const Login = ({ setAuth }) => {
                 window.location.reload(true)
             } else {
                 setAuth(false)
-                toast.error(response.status.json())
+                toast.error(response.data)
             }
             
         } catch (err) {
             console.error(err.message)
+            toast.error(err.response.data)
             // toast.error("Failed to login")
         }
     }

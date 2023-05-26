@@ -17,6 +17,7 @@ const Dashboard = ({ setAuth }) => {
             setName(parseRes.user_name)
             
         } catch (err) {
+            toast.error(err.message);
             console.error(err.message);
         }
     }

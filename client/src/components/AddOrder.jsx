@@ -9,7 +9,7 @@ const AddOrder = () => {
     const [password, setPassword] = useState("")
 
     const handleSubmit = async (e) => {
-        e.preventDefault() // prevent default refresh of page
+        e.preventDefault()
         try {
             const response = await OrderLookUp.post("/", {
                 name: name,

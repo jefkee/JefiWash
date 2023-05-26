@@ -24,6 +24,8 @@
     "axios": "^1.4.0",
     "bootstrap": "^5.2.3",
     "date-fns": "^2.30.0",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.5.29",
     "leaflet": "^1.9.4",
     "node": "^20.1.0",
     "react": "^18.2.0",

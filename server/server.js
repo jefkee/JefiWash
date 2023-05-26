@@ -1,10 +1,11 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const express = require("express");
-// const morgan = require("morgan")
 const cors = require("cors");
 const db = require("./db");
 const validInfo = require("./middleware/validInfo.js");
+
+const { PrismaClient } = require('@prisma/client')
 
 const app = express();
 
@@ -20,14 +21,8 @@ app.use("/dashboard", require("./routes/dashboard.js"));
 
 //get orders
 app.get("/getOrders", async (req, res) => {
-  // console.log('req.query: ', req.headers);
   const user_type = req.headers.user_type;
   const user_id = req.headers.user_id;
-  // const userRole = req.query.userRole;
-  // const userId = req.query.userId;
-
-  // console.log('userRole: ', userRole);
-  // console.log('userId: ', userId);
 
   try {
     let orders = [];
@@ -61,7 +56,6 @@ app.get("/getOrders", async (req, res) => {
 app.get("/api/v1/orders", async (req, res) => {
   try {
     const results = await db.users.findMany();
-    // console.log(results)
     res.status(200).json({
       status: "success",
       results: results.length,
@@ -74,46 +68,18 @@ app.get("/api/v1/orders", async (req, res) => {
   }
 });
 
-//get something by id
-// app.get("/api/v1/orders/:order_id", async (req, res) => {
-//     console.log(req.params.order_id)
-
-//     try{
-//         const results = await db.users.findUnique({
-//             where: {
-//                 id: parseInt(req.params.order_id)
-//             }
-//         });
-
-//         res.status(200).json({
-//             status: "success",
-//             data: {
-//                 orders: results
-//             }
-//         })
-
-//     } catch (err) {
-//          console.log(err)
-//     }
-
-// })
-
 app.put("/updateUser", validInfo, async (req, res) => {
-  console.log(req.body);
   try {
-    // console.log(req.body)
     const tokenData = req.header("token");
-    // console.log(tokenData)
     const decodedToken = jwt.decode(tokenData);
-    // console.log(decodedToken)
     const user_id = decodedToken.user;
-    // console.log(user_id)
+
     const user = await db.users.findUnique({
       where: {
         user_id: user_id,
       },
     });
-    // console.log(user)
+
     const updatedUser = await db.users.update({
       where: {
         user_id: user_id,
@@ -124,7 +90,7 @@ app.put("/updateUser", validInfo, async (req, res) => {
         user_phone_number: req.body.user_phone_number,
       },
     });
-    // console.log(updatedUser)
+
     res.status(200).json(updatedUser);
   } catch (err) {
     console.log(err);
@@ -133,19 +99,17 @@ app.put("/updateUser", validInfo, async (req, res) => {
 
 app.get("/getUser", async (req, res) => {
   try {
-    // console.log(req)
+    
     const tokenData = req.header("token");
-    // console.log(tokenData)
     const decodedToken = jwt.decode(tokenData);
-    // console.log(decodedToken)
     const user_id = decodedToken.user;
-    // console.log(user_id)
+
     const user = await db.users.findUnique({
       where: {
         user_id: user_id,
       },
     });
-    // console.log(user)
+
     res.status(200).json(user);
   } catch (err) {
     console.log(err);
@@ -154,13 +118,11 @@ app.get("/getUser", async (req, res) => {
 
 app.get("/role", async (req, res) => {
   try {
-    // console.log(req)
+
     const tokenData = req.header("token");
-    // console.log(tokenData)
     const decodedToken = jwt.decode(tokenData);
-    // console.log(decodedToken)
     const user_id = decodedToken.user;
-    // console.log(user_id)
+
     const user = await db.users.findUnique({
       where: {
         user_id: user_id,
@@ -174,23 +136,18 @@ app.get("/role", async (req, res) => {
 
 app.get("/username", async (req, res) => {
   try {
-    // console.log(req)
     const tokenData = req.header("token");
-    // console.log(tokenData)
     const decodedToken = jwt.decode(tokenData);
-    // console.log(decodedToken)
     const user_id = decodedToken.user;
-    // console.log(user_id)
+
     const user = await db.users.findUnique({
       where: {
         user_id: user_id,
       },
     });
-    // console.log(user)
+
     res.status(200).json(user?.user_name);
-    // const results = await findByID(tokenData)
-    // console.log(results)
-    // res.status(200).json(results?.user_name)
+
   } catch (err) {
     console.log(err);
   }
@@ -198,7 +155,6 @@ app.get("/username", async (req, res) => {
 
 app.post("/updateOrder", async (req, res) => {
   try {
-    console.log(req.body);
     const updatedOrder = await db.customers.update({
       where: {
         customer_id: req.body.customer_id,
@@ -216,8 +172,6 @@ app.post("/updateOrder", async (req, res) => {
 
 //create something
 app.post("/api/v1/orders", async (req, res) => {
-  // console.log(req.body)
-
   try {
     const results = await db.users.create({
       data: {
@@ -226,8 +180,6 @@ app.post("/api/v1/orders", async (req, res) => {
         password: req.body.password,
       },
     });
-
-    // console.log(results)
 
     res.status(201).json({
       status: "success",
@@ -265,9 +217,6 @@ app.put("/api/v1/orders/:order_id", async (req, res) => {
   } catch (err) {
     console.log(err);
   }
-
-  // console.log(req.params.order_id)
-  // console.log(req.body)
 });
 
 //delete something
@@ -284,6 +233,68 @@ app.delete("/api/v1/orders/:order_id", async (req, res) => {
     });
   } catch (err) {
     console.log(err);
+  }
+});
+
+app.get('/dataJson', async (req, res) => {
+  try {    
+    const prisma = new PrismaClient();
+
+    const order = await prisma.orders.findMany({
+      include: { customer: true, },
+    });
+    const vehicle = await prisma.vehicles.findMany({
+      include: { customer: true, },
+    });
+    const user = await prisma.users.findMany({
+    });
+
+    const data = {
+      order,
+      vehicle,
+      user,
+    };
+    
+    res.json(data);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).send('An error occurred while fetching data');
+  }
+});
+
+app.get('/dataJson', async (req, res) => {
+  try {
+    const albums = await db.album.findMany({
+      include: { songs: true, Artist: true },
+    });
+    const songs = await db.song.findMany({
+      include: { Album: true, Artist: true},
+    });
+    const artists = await db.artist.findMany({
+      include: { songs: true, albums: true },
+    });
+
+    const data = {
+      albums,
+      songs,
+      artists,
+    };
+    console.log(data);
+    res.json(data);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).send('An error occurred while fetching data');
+  }
+});
+
+app.get('/dataPdf', async (req, res) => {
+  try {
+    const users = await db.users.findMany();
+    const data = users;
+    res.json(data);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).send('An error occurred while fetching data');
   }
 });
 
