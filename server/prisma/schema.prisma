@@ -16,19 +16,19 @@ enum UserType {
 }
 
 model Users {
-  user_id             String    @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  user_name           String    @db.VarChar(255)
-  user_email          String    @unique @db.VarChar(255)
-  user_password       String    @db.VarChar(255)
-  user_phone_number   String    @db.VarChar(255)
-  user_type           UserType[]  @default([USER])  
-  customers           Customers[]
+  user_id            String    @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_name          String    @db.VarChar(255)
+  user_email         String    @unique @db.VarChar(255)
+  user_password      String    @db.VarChar(255)
+  user_phone_number  String    @db.VarChar(255)
+  user_type          UserType[]  @default([USER])  
+  customers          Customers[]
 
   @@map("users")
 }
 
 model Customers {
-  customer_id         String   @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  customer_id        String    @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   customer_first_name String
   customer_last_name  String
   customer_address    String
@@ -36,39 +36,71 @@ model Customers {
   customer_userId     String?  @db.Uuid
   customer_orders     Orders[]
   customer_vehicles   Vehicles[]
-  customer_files      Files[]
+  customer_files      Photos[]
+  customer_reviews    Reviews[]
 
   @@map("customers")
 }
 
 model Orders {
-  order_id            String   @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  order_date    DateTime
-  payment_status String
-  customer      Customers @relation(fields: [customerId], references: [customer_id], onDelete: Cascade)
-  customerId    String   @db.Uuid
+  order_id           String        @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  order_date         DateTime
+  payment_status     String
+  customer           Customers      @relation(fields: [customerId], references: [customer_id], onDelete: Cascade)
+  customerId         String        @db.Uuid
+  order_packages     OrderPackage[]
 
   @@map("orders")
 }
 
 model Vehicles {
-  vehicle_id         String   @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  make       String
-  model      String
-  year       String
-  customer   Customers @relation(fields: [customerId], references: [customer_id], onDelete: Cascade)
-  customerId String   @db.Uuid
+  vehicle_id         String    @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  make               String
+  model              String
+  year               String
+  customer           Customers  @relation(fields: [customerId], references: [customer_id], onDelete: Cascade)
+  customerId         String    @db.Uuid
 
   @@map("vehicles")
 }
 
-model Files {
-  file_id         String   @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  file_name  String
-  file_path  String
-  file_size  Int
-  customer   Customers @relation(fields: [customerId], references: [customer_id], onDelete: Cascade)
-  customerId String   @db.Uuid
+model Photos {
+  photo_id            String    @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  photo_name          String
+  photo_path          String
+  photo_size          Int
+  customer           Customers  @relation(fields: [customerId], references: [customer_id], onDelete: Cascade)
+  customerId         String    @db.Uuid
 
-  @@map("files")
+  @@map("photos")
+}
+
+model Reviews {
+  review_id       String   @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  rating          Float
+  comment         String
+  customer        Customers @relation(fields: [customerId], references: [customer_id], onDelete: Cascade)
+  customerId      String   @db.Uuid
+
+  @@map("reviews")
+}
+
+model Packages {
+  package_id      String         @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  package_name            String
+  package_description     String
+  package_price           String
+  orders          OrderPackage[]
+
+  @@map("packages")
+}
+
+model OrderPackage {
+  order_package_id  String   @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  order             Orders    @relation(fields: [orderId], references: [order_id])
+  package           Packages? @relation(fields: [packageId], references: [package_id])
+  orderId           String   @db.Uuid
+  packageId         String?  @db.Uuid
+
+  @@map("order_packages")
 }

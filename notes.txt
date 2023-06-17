@@ -5,9 +5,4 @@ sudo -u postgres psql                 - login as postgres user
 sudo /etc/init.d/postgresql start     - start psql server
 lsof -i:8080                          - check if smth is running on port
 kill 1212                             - kill process by id
-
-
-23diena: pabaigt order kad 
-24diena: pridet admina 2 funkcijas
-
-ar objekt management galima priskirt prismos funkcijas
+npx prisma db push                    - push db changes to db

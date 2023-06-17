@@ -28,13 +28,13 @@ app.get("/getOrders", async (req, res) => {
     let orders = [];
 
     if (user_type === "ADMIN") {
-      orders = await db.orders.findMany({
+      orders = await db.Orders.findMany({
         include: {
           customer: true,
         },
       });
     } else if (user_type === "USER" && user_id) {
-      orders = await db.orders.findMany({
+      orders = await db.Orders.findMany({
         where: {
           customer: {
             customer_userId: user_id,
@@ -55,7 +55,7 @@ app.get("/getOrders", async (req, res) => {
 //get all something
 app.get("/api/v1/orders", async (req, res) => {
   try {
-    const results = await db.users.findMany();
+    const results = await db.Users.findMany();
     res.status(200).json({
       status: "success",
       results: results.length,
@@ -74,13 +74,13 @@ app.put("/updateUser", validInfo, async (req, res) => {
     const decodedToken = jwt.decode(tokenData);
     const user_id = decodedToken.user;
 
-    const user = await db.users.findUnique({
+    const user = await db.Users.findUnique({
       where: {
         user_id: user_id,
       },
     });
 
-    const updatedUser = await db.users.update({
+    const updatedUser = await db.Users.update({
       where: {
         user_id: user_id,
       },
@@ -104,7 +104,7 @@ app.get("/getUser", async (req, res) => {
     const decodedToken = jwt.decode(tokenData);
     const user_id = decodedToken.user;
 
-    const user = await db.users.findUnique({
+    const user = await db.Users.findUnique({
       where: {
         user_id: user_id,
       },
@@ -123,7 +123,7 @@ app.get("/role", async (req, res) => {
     const decodedToken = jwt.decode(tokenData);
     const user_id = decodedToken.user;
 
-    const user = await db.users.findUnique({
+    const user = await db.Users.findUnique({
       where: {
         user_id: user_id,
       },
@@ -140,7 +140,7 @@ app.get("/username", async (req, res) => {
     const decodedToken = jwt.decode(tokenData);
     const user_id = decodedToken.user;
 
-    const user = await db.users.findUnique({
+    const user = await db.Users.findUnique({
       where: {
         user_id: user_id,
       },
@@ -155,7 +155,7 @@ app.get("/username", async (req, res) => {
 
 app.post("/updateOrder", async (req, res) => {
   try {
-    const updatedOrder = await db.customers.update({
+    const updatedOrder = await db.Customers.update({
       where: {
         customer_id: req.body.customer_id,
       },
@@ -173,7 +173,7 @@ app.post("/updateOrder", async (req, res) => {
 //create something
 app.post("/api/v1/orders", async (req, res) => {
   try {
-    const results = await db.users.create({
+    const results = await db.Users.create({
       data: {
         name: req.body.name,
         email: req.body.email,
@@ -195,7 +195,7 @@ app.post("/api/v1/orders", async (req, res) => {
 //update something
 app.put("/api/v1/orders/:order_id", async (req, res) => {
   try {
-    const results = await db.users.update({
+    const results = await db.Users.update({
       where: {
         id: parseInt(req.params.order_id),
       },
@@ -222,7 +222,7 @@ app.put("/api/v1/orders/:order_id", async (req, res) => {
 //delete something
 app.delete("/api/v1/orders/:order_id", async (req, res) => {
   try {
-    const results = await db.users.delete({
+    const results = await db.Users.delete({
       where: {
         id: parseInt(req.params.order_id),
       },
@@ -240,13 +240,13 @@ app.get('/dataJson', async (req, res) => {
   try {    
     const prisma = new PrismaClient();
 
-    const order = await prisma.orders.findMany({
+    const order = await prisma.Orders.findMany({
       include: { customer: true, },
     });
-    const vehicle = await prisma.vehicles.findMany({
+    const vehicle = await prisma.Vehicles.findMany({
       include: { customer: true, },
     });
-    const user = await prisma.users.findMany({
+    const user = await prisma.Users.findMany({
     });
 
     const data = {
@@ -262,34 +262,9 @@ app.get('/dataJson', async (req, res) => {
   }
 });
 
-app.get('/dataJson', async (req, res) => {
-  try {
-    const albums = await db.album.findMany({
-      include: { songs: true, Artist: true },
-    });
-    const songs = await db.song.findMany({
-      include: { Album: true, Artist: true},
-    });
-    const artists = await db.artist.findMany({
-      include: { songs: true, albums: true },
-    });
-
-    const data = {
-      albums,
-      songs,
-      artists,
-    };
-    console.log(data);
-    res.json(data);
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    res.status(500).send('An error occurred while fetching data');
-  }
-});
-
 app.get('/dataPdf', async (req, res) => {
   try {
-    const users = await db.users.findMany();
+    const users = await db.Users.findMany();
     const data = users;
     res.json(data);
   } catch (error) {
@@ -297,6 +272,51 @@ app.get('/dataPdf', async (req, res) => {
     res.status(500).send('An error occurred while fetching data');
   }
 });
+
+app.get('/getPackages', async (req, res) => {
+  try {
+    const packages = await db.Packages.findMany();
+    const data = packages;
+    res.json(data);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).send('An error occurred while fetching data');
+  }
+});
+
+app.post('/updatePackage', async (req, res) => {
+  try {
+    console.log(req.body);
+    const updatedPackage = await db.Packages.update({
+      where: {
+        package_id: req.body.package_id,
+      },
+      data: {
+        package_name: req.body.package_name,
+        package_description: req.body.package_description,
+        package_price: req.body.package_price,
+      },
+    });
+    res.status(200).json(updatedPackage);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.delete('/deletePackage', async (req, res) => {
+  try {
+    console.log(req.body);
+    const deletedPackage = await db.Packages.delete({
+      where: {
+        package_id: req.headers.package_id,
+      },
+    });
+    res.status(200).json(deletedPackage);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
