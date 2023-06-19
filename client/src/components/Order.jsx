@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Grid, TextField, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
@@ -7,8 +7,18 @@ import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import OrderLookUp from "../apis/OrderLookUp";
 import { toast } from "react-toastify";
+import PackageInfo from "../apis/PackageInfo";
+
+import {
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 
 function Order() {
+
+  const [selectedPackage, setSelectedPackage] = useState([]);
+  const [packages, setPackages] = useState([]);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -16,11 +26,24 @@ function Order() {
     carMake: "",
     carModel: "",
     carYear: "",
+    package: "",
     dateTime: new Date(),
     lat: null,
     lng: null,
     jwt: localStorage.getItem("token"),
   });
+
+  const fetchPackages = async () => {
+    try {
+      const response = await PackageInfo.getPackages();
+      const packages = response.data;
+      setPackages(packages);
+      // setSelectedPackage(packages[0].id);
+    } catch (err) {
+      toast.error("Error fetching packages");
+      console.log(err);
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -33,7 +56,8 @@ function Order() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const body = { ...formData };
+      const body = { ...formData, 
+                    packageId: selectedPackage };
       const response = await OrderLookUp.post("/auth/order", body, {
         headers: { token: localStorage.token }
       });
@@ -43,6 +67,7 @@ function Order() {
         window.location.href = "/"
       } else {
         toast.error(response.data)
+        // console.error(response.data)
       }
     } catch (err) {
       toast.error(err.response.data);
@@ -63,6 +88,10 @@ function Order() {
       <Marker position={{ lat: formData.lat, lng: formData.lng }} />
     );
   }
+
+  useEffect(() => {
+    fetchPackages();
+  }, []);
 
   return (
     <>
@@ -158,6 +187,28 @@ function Order() {
               }}
             />
           </Grid>
+          <Grid item xs={12}>
+            <InputLabel>Package</InputLabel>
+            <Select
+              fullWidth
+              value={selectedPackage}
+              onChange={(e) => setSelectedPackage(e.target.value)}
+              inputProps={{
+              name: "package",
+              id: "package-select",
+              style: {
+                color: "white",
+              },
+            }}
+            >
+            {packages.map((pkg) => (
+              <MenuItem key={pkg.package_id} value={pkg.package_id}>
+                {pkg.package_name}
+              </MenuItem>
+            ))}
+            </Select>
+          </Grid>
+
           <Grid item xs={12}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker

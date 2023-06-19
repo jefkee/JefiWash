@@ -3,7 +3,6 @@ import PackageInfo from "../apis/PackageInfo";
 import React, { useState, useEffect } from "react";
 import UserInfo from "../apis/UserInfo";
 
-const isAdmin = await UserInfo.isAdmin();
 
 const PackagesList = ({ user }) => {
     const [packages, setPackages] = useState([]);
@@ -11,12 +10,20 @@ const PackagesList = ({ user }) => {
     const [editedName, setEditedName] = useState(null);
     const [editedDescription, setEditedDescription] = useState(null);
     const [editedPrice, setEditedPrice] = useState(null);
-
+    const [isAdmin, setIsAdmin] = useState(null);
+    
+    async function checkIfAdmin() { 
+        const isAdmin = await UserInfo.isAdmin();
+        setIsAdmin(isAdmin);
+        console.log("isAdmin", isAdmin);
+      }
+      
+    checkIfAdmin()
 
 
     useEffect(() => {
-        // console.log("useEffect", isAdmin);
         fetchPackages(isAdmin);
+        console.log("useEffect", isAdmin);
     }, []);
     
     const fetchPackages = async () => {
@@ -32,7 +39,7 @@ const PackagesList = ({ user }) => {
     
     const handleSave = async (package_id, package_name, package_description, package_price) => {
         try {
-            console.log("kas cia", package_id, package_name, package_description, package_price)
+            // console.log("kas cia", package_id, package_name, package_description, package_price)
             const response = await PackageInfo.updatePackage(isAdmin ,package_id, package_name, package_description, package_price);
             toast.success("Package updated successfully");
             setEditingPackageId(null);
@@ -63,16 +70,6 @@ const PackagesList = ({ user }) => {
             {packages.map((pkg) => (
                 <li key={pkg.package_id} className="list-group-item border rounded bg-transparent text-white d-flex justify-content-between align-items-center">
                     <div>
-                        Package ID:{" "}
-                        {editingPackageId === pkg.package_id ? (
-                            <input
-                                type="text"
-                                defaultValue={pkg.package_id}
-                                className="form-control"
-                            />
-                        ) : (
-                            pkg.package_id
-                        )}{"- "}
                         Package Name:{" "}
                         {editingPackageId === pkg.package_id ? (
                             <input
@@ -107,6 +104,7 @@ const PackagesList = ({ user }) => {
                             pkg.package_price
                         )}
                     </div>
+                    {isAdmin && (
                     <div>
                         {editingPackageId === pkg.package_id ? (
                             <button
@@ -130,6 +128,7 @@ const PackagesList = ({ user }) => {
                             Delete
                         </button>
                     </div>
+                    )}
                 </li>
             ))}
             </ul>

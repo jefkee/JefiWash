@@ -19,6 +19,7 @@ router.post('/order', authorization, async (req, res) => {
             carMake,
             carModel,
             carYear,
+            packageId,
             dateTime,
             lat,
             lng,
@@ -55,6 +56,13 @@ router.post('/order', authorization, async (req, res) => {
                 customerId: newCustomer.customer_id
             }
         });
+
+        const selectedPackage = await db.orderPackage.create({
+            data: {
+                orderId: newOrder.order_id,
+                packageId: packageId
+            }
+        })
 
         res.status(201).json({
             message: "Order created successfully",

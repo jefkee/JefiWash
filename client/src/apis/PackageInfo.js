@@ -8,7 +8,7 @@ const PackageInfo = {
     getPackages : async () => {
         try {
             const response = await PackageLookUp.get('/getPackages')
-            console.log(response)
+            // console.log(response)
             return response
         }
         catch (error) {
@@ -20,7 +20,6 @@ const PackageInfo = {
         try {
             // console.log(isAdmin)
             if(isAdmin) {
-                console.log("is admin", package_id, package_name, package_description, package_price)
                 const response = await PackageLookUp.post('/updatePackage', {
                     package_id: package_id,
                     package_name: package_name,

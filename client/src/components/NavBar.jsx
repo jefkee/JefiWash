@@ -16,7 +16,12 @@ import { toast } from "react-toastify";
 
 import UserInfo from "../apis/UserInfo";
 
-const isAdmin = await UserInfo.isAdmin();
+async function isAdmin() { 
+  const isAdmin = await UserInfo.isAdmin();
+  return isAdmin;
+}
+
+isAdmin()
 
 function ResponsiveAppBar({ isAuthenticated,  }) {
   // console.log(isAdmin);

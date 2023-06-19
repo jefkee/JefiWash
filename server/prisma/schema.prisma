@@ -86,7 +86,7 @@ model Reviews {
 }
 
 model Packages {
-  package_id      String         @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  package_id              String    @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   package_name            String
   package_description     String
   package_price           String
