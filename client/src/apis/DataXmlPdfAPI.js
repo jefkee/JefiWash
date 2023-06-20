@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BaseURL = "https://jefiwash-backendas.onrender.com";
+const BaseURL = "http://localhost:8080";
 
 const DataXmlPdfAPI = {
     dataPdf: async () => {

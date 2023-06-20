@@ -276,6 +276,7 @@ app.get('/dataPdf', async (req, res) => {
 app.get('/getPackages', async (req, res) => {
   try {
     const packages = await db.Packages.findMany();
+    console.log(packages);
     const data = packages;
     res.json(data);
   } catch (error) {
