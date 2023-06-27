@@ -34,6 +34,20 @@ const OrderInfo = {
             else {
                 return console.log("no user logged in")
             }
+    },
+
+    deleteOrder : async (order_id) => {
+        if(isUserLoggedIn) {
+            const response = await OrderLookUp.delete('/deleteOrder', {
+                headers: {
+                    token: isUserLoggedIn,
+                    order_id: order_id
+                    }})
+                return response
+            }
+            else {
+                return console.log("no user logged in")
+            }
     }
 
 }

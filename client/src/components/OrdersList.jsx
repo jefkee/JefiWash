@@ -50,6 +50,7 @@ const OrdersList = ({ user }) => {
     
     const handleDelete = async (order_id) => {
       try {
+            console.log("orderis", order_id)
             const response = await OrderInfo.deleteOrder(order_id)
             toast.success("Order deleted successfully")
             window.location.reload();

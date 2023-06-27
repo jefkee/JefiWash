@@ -9,6 +9,16 @@ const { PrismaClient } = require('@prisma/client')
 
 const app = express();
 
+const multer = require("multer");
+const storage = multer.diskStorage({
+  destination: 'src/uploads',
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  }
+});
+
+const upload = multer({ storage: storage });
+
 //middleware
 app.use(cors());
 app.use(express.json()); //to retrieve information from the body of the POST request
@@ -68,11 +78,13 @@ app.get("/api/v1/orders", async (req, res) => {
   }
 });
 
-app.put("/updateUser", validInfo, async (req, res) => {
+app.put("/updateUser", upload.single('user_photo'), validInfo, async (req, res) => {
   try {
     const tokenData = req.header("token");
     const decodedToken = jwt.decode(tokenData);
     const user_id = decodedToken.user;
+
+    const photo = req.body;
 
     const user = await db.Users.findUnique({
       where: {
@@ -88,12 +100,40 @@ app.put("/updateUser", validInfo, async (req, res) => {
         user_name: req.body.user_name,
         user_email: req.body.user_email,
         user_phone_number: req.body.user_phone_number,
-      },
+      }
     });
+
+    const uploadedPhoto = await db.Photos.create({
+      data: {
+        photo_path: photo.user_photo,
+
+      }
+    });
+
 
     res.status(200).json(updatedUser);
   } catch (err) {
     console.log(err);
+  }
+});
+
+app.get("/getUserPhoto", async (req, res) => {
+  try {
+    const tokenData = req.header("token");
+    const decodedToken = jwt.decode(tokenData);
+    const user_id = decodedToken.user;
+
+    const user = await db.Users.findUnique({
+      where: {
+        user_id: user_id,
+      },
+    });
+
+    res.set("Content-Type", "image/jpeg"); // Or the photo format you are using.
+    res.send(user.user_photo);
+  } catch (err) {
+    res.status(500).json({ error: "Error retrieving user photo" });
+    console.error(err);
   }
 });
 
@@ -165,6 +205,44 @@ app.post("/updateOrder", async (req, res) => {
       },
     });
     res.status(200).json(updatedOrder);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// app.delete("/deleteOrder", async (req, res) => {
+//   try {
+//     console.log(req.headers.order_id);
+
+//     const deletedOrder = await db.Orders.delete({
+//       where: {
+//         order_id: req.headers.order_id,
+//       },
+//     });
+//     res.status(200).json(deletedOrder);
+//   } catch (err) {
+//     console.log(err);
+//   }
+// });
+
+app.delete("/deleteOrder", async (req, res) => {
+  try {
+    console.log(req.headers.order_id);
+
+    // First, delete related records from the OrderPackage table
+    await db.OrderPackage.deleteMany({
+      where: {
+        orderId: req.headers.order_id,
+      },
+    });
+
+    // Now, delete the order
+    const deletedOrder = await db.Orders.delete({
+      where: {
+        order_id: req.headers.order_id,
+      },
+    });
+    res.status(200).json(deletedOrder);
   } catch (err) {
     console.log(err);
   }
@@ -276,7 +354,7 @@ app.get('/dataPdf', async (req, res) => {
 app.get('/getPackages', async (req, res) => {
   try {
     const packages = await db.Packages.findMany();
-    console.log(packages);
+    // console.log(packages);
     const data = packages;
     res.json(data);
   } catch (error) {
@@ -287,7 +365,7 @@ app.get('/getPackages', async (req, res) => {
 
 app.post('/updatePackage', async (req, res) => {
   try {
-    console.log(req.body);
+    // console.log(req.body);
     const updatedPackage = await db.Packages.update({
       where: {
         package_id: req.body.package_id,
@@ -306,7 +384,7 @@ app.post('/updatePackage', async (req, res) => {
 
 app.delete('/deletePackage', async (req, res) => {
   try {
-    console.log(req.body);
+    // console.log(req.body);
     const deletedPackage = await db.Packages.delete({
       where: {
         package_id: req.headers.package_id,

@@ -15,6 +15,7 @@ import Order from './components/Order'
 import OrdersList from './components/OrdersList'
 import Profile from './components/Profile'
 import PackagesList from './components/PackagesList'
+import About from './components/About'
 
 //toastify
 import { ToastContainer, toast } from 'react-toastify'
@@ -79,6 +80,7 @@ function App() {
       </div>
           <div className="router vw-100 vh-100 p-0">
           <Routes>
+            <Route exact path="/about" element={<About />} />
             <Route exact path="/packages" element={<PackagesList user={user}/>} />
             <Route exact path="/orders" element={isAuthenticated ? <OrdersList user={user}/> : <Navigate to="/login"/>} />
             <Route exact path="/profile" element={isAuthenticated ? <Profile/> : <Navigate to="/login"/>}/>

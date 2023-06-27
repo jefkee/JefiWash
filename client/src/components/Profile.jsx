@@ -9,6 +9,8 @@ const Profile = () => {
         user_phone_number: '',
         user_type: '',
     });
+    const [photo, setPhoto] = useState(null);
+
     
     useEffect(() => {
         const fetchData = async () => {
@@ -40,7 +42,10 @@ const Profile = () => {
     
     const handleSaveChanges = async () => {
         try {
-            const response = await UserInfo.updateUserInfo(user);
+          // const formData = new FormData();
+            // formData.append('user_photo', photo);
+            console.log("photo", photo);
+            const response = await UserInfo.updateUserInfo(user, photo);
 
             setUser({
                 user_name: response.user_name,
@@ -48,12 +53,19 @@ const Profile = () => {
                 user_phone_number: response.user_phone_number,
             });
             toast.success("Profile updated successfully")
-            window.location.reload();
+            // window.location.reload();
     } catch (error) {
         toast.error(error.response.data)
         console.error(error);
     }
     };
+
+    const handlePhotoChange = (e) => {
+      const file = e.target.files[0];
+      console.log("file", file);
+      setPhoto(file);
+    };
+    
 
     const { user_name, user_email, user_phone_number } = user;
 
@@ -100,11 +112,25 @@ const Profile = () => {
             onChange={handleChange}
           />
         </div>
+      <div className="mb-3">
+  <label htmlFor="userPhoto" className="form-label">
+    Profile Photo
+  </label>
+  <input
+    type="file"
+    className="form-control"
+    id="userPhoto"
+    name="user_photo"
+    onChange={handlePhotoChange}
+  />
+</div>
       </form>
       <button className="btn btn-primary" onClick={handleSaveChanges}>
         Save Changes
-      </button>      
+      </button>
     </div>
+
+    
   );
 };
 

@@ -15,7 +15,7 @@ const PackagesList = ({ user }) => {
     async function checkIfAdmin() { 
         const isAdmin = await UserInfo.isAdmin();
         setIsAdmin(isAdmin);
-        console.log("isAdmin", isAdmin);
+        // console.log("isAdmin", isAdmin);
       }
       
     checkIfAdmin()
@@ -23,7 +23,7 @@ const PackagesList = ({ user }) => {
 
     useEffect(() => {
         fetchPackages(isAdmin);
-        console.log("useEffect", isAdmin);
+        // console.log("useEffect", isAdmin);
     }, []);
     
     const fetchPackages = async () => {
@@ -70,7 +70,7 @@ const PackagesList = ({ user }) => {
             {packages.map((pkg) => (
                 <li key={pkg.package_id} className="list-group-item border rounded bg-transparent text-white d-flex justify-content-between align-items-center">
                     <div>
-                        Package Name:{" "}
+                        Package Name -{" "}
                         {editingPackageId === pkg.package_id ? (
                             <input
                                 type="text"
@@ -80,8 +80,8 @@ const PackagesList = ({ user }) => {
                             />
                         ) : (
                             pkg.package_name
-                        )}{"- "}
-                        Package Description:{" "}
+                        )}{";    "}
+                        Package Description -{" "}
                         {editingPackageId === pkg.package_id ? (
                             <input
                                 type="text"
@@ -91,8 +91,8 @@ const PackagesList = ({ user }) => {
                             />
                         ) : (
                             pkg.package_description
-                        )}{"- "}
-                        Package Price:{" "}
+                        )}{";    "}
+                        Package Price -{" "}
                         {editingPackageId === pkg.package_id ? (
                             <input
                                 type="text"

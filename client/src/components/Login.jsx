@@ -41,16 +41,30 @@ const Login = ({ setAuth }) => {
     }
     
     return (
-        <Fragment>
-        <h1 className="text-center my-5 text-white">Login</h1>
-        <form onSubmit={onSubmitForm}>
-            <input type="email" name="user_email" placeholder="email" value={user_email} onChange={e => onChange(e)} className="form-control my-3"/>
-            <input type="password" name="user_password" placeholder="password" value={user_password} onChange={e => onChange(e)} className="form-control my-3"/>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <form onSubmit={onSubmitForm} className="w-50 text-center">
+            <h1 className="text-center my-5 text-white">Login</h1>
+            <input
+              type="email"
+              name="user_email"
+              placeholder="email"
+              value={user_email}
+              onChange={(e) => onChange(e)}
+              className="form-control my-3 text-center"
+            />
+            <input
+              type="password"
+              name="user_password"
+              placeholder="password"
+              value={user_password}
+              onChange={(e) => onChange(e)}
+              className="form-control my-3 text-center"
+            />
             <button className="btn btn-success btn-block">Submit</button>
-        </form>
-        <Link to="/register">Register</Link>
-        </Fragment>
-    );
+          </form>
+          <Link to="/register">Register</Link>
+        </div>
+      );
     }
 
 export default Login;

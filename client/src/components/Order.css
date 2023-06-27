@@ -1,0 +1,6 @@
+.transparent-card {
+    background-color: rgba(255, 255, 255, 0.726); /* Adjust the alpha value (0.2) to control the transparency */
+    border-radius: 8px;
+    padding: 5px;
+  }
+  

@@ -43,17 +43,20 @@ const Register = ({ setAuth }) => {
     }
 
     return (
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+
         <Fragment>
         <h1 className="text-center my-5 text-white">Register</h1>
-        <form onSubmit={onSubmitForm}>
-            <input type="name" name="user_name" placeholder="name" className="form-control my-3" value={user_name} onChange={e => onChange(e)}/>
-            <input type="email" name="user_email" placeholder="email" className="form-control my-3" value={user_email} onChange={e => onChange(e)}/>
-            <input type="password" name="user_password" placeholder="password" className="form-control my-3" value={user_password} onChange={e => onChange(e)}/>
-            <input type="number" name="user_phone_number" placeholder="phone number" className="form-control my-3" value={user_phone_number} onChange={e => onChange(e)}/>
+        <form onSubmit={onSubmitForm} className="w-50 text-center">
+            <input type="name" name="user_name" placeholder="name" className="form-control my-3 text-center" value={user_name} onChange={e => onChange(e)}/>
+            <input type="email" name="user_email" placeholder="email" className="form-control my-3 text-center" value={user_email} onChange={e => onChange(e)}/>
+            <input type="password" name="user_password" placeholder="password" className="form-control my-3 text-center" value={user_password} onChange={e => onChange(e)}/>
+            <input type="number" name="user_phone_number" placeholder="phone number" className="form-control my-3 text-center" value={user_phone_number} onChange={e => onChange(e)}/>
             <button className="btn btn-success btn-block">Submit</button>
         </form>
         <Link to="/login">Login</Link>
         </Fragment>
+        </div>
     );
 }
 

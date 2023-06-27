@@ -36,7 +36,6 @@ model Customers {
   customer_userId     String?  @db.Uuid
   customer_orders     Orders[]
   customer_vehicles   Vehicles[]
-  customer_files      Photos[]
   customer_reviews    Reviews[]
 
   @@map("customers")
@@ -66,11 +65,7 @@ model Vehicles {
 
 model Photos {
   photo_id            String    @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  photo_name          String
   photo_path          String
-  photo_size          Int
-  customer           Customers  @relation(fields: [customerId], references: [customer_id], onDelete: Cascade)
-  customerId         String    @db.Uuid
 
   @@map("photos")
 }

@@ -15,6 +15,8 @@ import {
   Select,
 } from "@mui/material";
 
+import "./Order.css"
+
 function Order() {
 
   const [selectedPackage, setSelectedPackage] = useState([]);
@@ -112,10 +114,11 @@ function Order() {
         Order
       </Typography>
       <form>
-        <Grid
+        <Grid 
+          className="transparent-card"
           container
           spacing={2}
-          style={{ paddingLeft: "20px", paddingRight: "20px" }}
+          style={{ paddingLeft: "20px", paddingRight: "20px"}}
         >
           <Grid item xs={6}>
             <TextField
@@ -124,11 +127,12 @@ function Order() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              InputProps={{
-                style: {
-                  color: "white",
-                },
-              }}
+              // InputProps={{
+              //   style: {
+              //     color: "white",
+              //     // backgroundColor: "white",
+              //   },
+              // }}
             />
           </Grid>
           <Grid item xs={6}>
@@ -138,11 +142,11 @@ function Order() {
               name="surname"
               value={formData.surname}
               onChange={handleChange}
-              InputProps={{
-                style: {
-                  color: "white",
-                },
-              }}
+              // InputProps={{
+              //   style: {
+              //     color: "white",
+              //   },
+              // }}
             />
           </Grid>
           <Grid item xs={4}>
@@ -152,11 +156,11 @@ function Order() {
               name="carMake"
               value={formData.carMake}
               onChange={handleChange}
-              InputProps={{
-                style: {
-                  color: "white",
-                },
-              }}
+              // InputProps={{
+              //   style: {
+              //     color: "white",
+              //   },
+              // }}
             />
           </Grid>
           <Grid item xs={4}>
@@ -166,11 +170,11 @@ function Order() {
               name="carModel"
               value={formData.carModel}
               onChange={handleChange}
-              InputProps={{
-                style: {
-                  color: "white",
-                },
-              }}
+              // InputProps={{
+              //   style: {
+              //     color: "white",
+              //   },
+              // }}
             />
           </Grid>
           <Grid item xs={4}>
@@ -180,11 +184,11 @@ function Order() {
               name="carYear"
               value={formData.carYear}
               onChange={handleChange}
-              InputProps={{
-                style: {
-                  color: "white",
-                },
-              }}
+              // InputProps={{
+              //   style: {
+              //     color: "white",
+              //   },
+              // }}
             />
           </Grid>
           <Grid item xs={12}>
@@ -194,10 +198,10 @@ function Order() {
               value={selectedPackage}
               onChange={(e) => setSelectedPackage(e.target.value)}
               inputProps={{
-              name: "package",
-              id: "package-select",
-              style: {
-                color: "white",
+                name: "package",
+                id: "package-select",
+                style: {
+                  color: "white",
               },
             }}
             >

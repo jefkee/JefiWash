@@ -28,7 +28,7 @@ function ResponsiveAppBar({ isAuthenticated,  }) {
   const pages = ["Packages", "About"];
   const settings = ["Profile", "Orders", "Logout"];
 
-  const adminSettings = ["Profile", "Orders", "Dashboard", "Logout"];
+  const adminSettings = ["Profile", "Orders", "Logout"];
 
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
